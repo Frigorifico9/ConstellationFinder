@@ -1,0 +1,124 @@
+def extended_gcd(a, b): #Helps us reduce fractions
+    if b == 0:
+        return a, 1, 0
+
+    gcd, x1, y1 = extended_gcd(b, a % b)
+    x = y1
+    y = x1 - (a // b) * y1
+
+    return gcd, x, y
+
+def dealWithScientificNotation(number):
+    scientific = False
+    numberPart = ''
+    decimalPart = abs(number) - int(abs(number))
+    print(decimalPart)
+    exponent=len(str(decimalPart))-2
+    print(exponent)
+    for element in str(number):
+        if element == 'e':
+            scientific = True
+            exponent = ''
+        if not scientific:
+            numberPart=numberPart+element
+        elif element != 'e':
+            exponent = exponent+element
+    return float(numberPart), float(exponent)
+
+def getFraction(number): #turns the decimal coefficients into fractions
+    numberPart, exponent = dealWithScientificNotation(number)
+    powerOfTen = 10**exponent
+    [gcd, x, y] = extended_gcd(numberPart*powerOfTen,powerOfTen)
+    return numberPart*powerOfTen/gcd, powerOfTen/gcd
+
+def findFirstSolution(numerator1,denominator1,numerator2,denominator2): #We find the first solution by brute force, I'm sorry
+    for n in range(0,2**63-1):
+        k = (numerator1/denominator1)*n+numerator2/denominator2
+        if int(k)==k:
+            return k,n
+
+def Collatz(start,finish): #Generates the constellation in one section of the Collatz Tree
+    n = start
+    sequence=[start]
+    while True:
+        if n%2 == 0:
+            n=n/2
+            if (n-4)%6 == 0:
+                sequence.append(n)
+            if n == finish:
+                return sequence
+        elif n%2 ==1 :
+            n=3*n+1
+            if (n-4)%6 == 0:
+                sequence.append(n)
+            if n == finish:
+                return sequence
+
+class Node: #I needed to access all of thee constants dynamically and this is the best I came up with
+    def __init__(self,symbol):
+        if symbol == 'S':
+            self.n1 = 2
+            self.n2 = 1
+            self.s1 = 3
+            self.s2 = 2
+        elif symbol == 'L':
+            self.n1 = 4
+            self.n2 = 0
+            self.s1 = 3
+            self.s2 = 0
+        elif symbol == 'T':
+            self.n1 = 4
+            self.n2 = 2
+            self.s1 = 1
+            self.s2 = 0
+
+def Threading(constellation):
+    [constant1, constant2] = [1, 0]
+    for n in range(1, len(constellation)):
+        prevNode = Node(constellation[n - 1])
+        currentNode = Node(constellation[n])
+        factor1 = prevNode.s1 / currentNode.n1
+        constant1 = factor1 * constant1
+        factor2 = (prevNode.s2 - currentNode.n2) / currentNode.n1
+        constant2 = factor1 * constant2 + factor2
+    return constant1,constant2
+
+def getNodes(Solutions_a_0,Solutions_a_n,constellation,b): #Give it the coefficients for the constellation and it will find it somewhere
+    firstNode = Node(constellation[0])
+    lastNode = Node(constellation[len(constellation)-1])
+    a_0 = Solutions_a_0[0] * b + Solutions_a_0[1]
+    a_n = Solutions_a_n[0] * b + Solutions_a_n[1]
+    n1 = firstNode.n1 * a_0 + firstNode.n2
+    n2 = lastNode.s1 * a_n + lastNode.s2
+    return 6*n1+4, 6*n2+4
+
+def getEachNode(Solutions_a_0,b,constellation):
+    nodes = []
+    a0 = Solutions_a_0[0] * b + Solutions_a_0[1]
+    for element in range(0, len(constellation)-1):
+        nextNode = Node(constellation[element + 1])
+        currentNode = Node(constellation[element])
+        n = currentNode.n1 * a0 + currentNode.n2
+        nodes.append(6*n+4)
+        a0 = (currentNode.s1 * a0 + currentNode.s2 - nextNode.n2)/nextNode.n1
+    lastNode = Node(constellation[len(constellation)-1])
+    n = lastNode.n1 * a0 + lastNode.n2
+    nodes.append(6 * n + 4)
+    return nodes
+
+
+constellation = 'SLSLSLSLSLS'
+b=-1
+constant1,constant2 = Threading(constellation)
+[numerator1,denominator1] = getFraction(constant1)
+[numerator2,denominator2] = getFraction(constant2)
+[k1,k2] = findFirstSolution(numerator1,denominator1,numerator2,denominator2)
+Solutions_a_0 = [denominator1,k2]
+Solutions_a_n = [numerator1,k1]
+[start, finish] = getNodes(Solutions_a_0,Solutions_a_n,constellation,b)
+
+print('The equation for the constellation '+constellation+' is a_n = '+str(constant1)+' * a_0 + '+str(constant2))
+
+print('The solutions are: a_0 = '+str(Solutions_a_0[0])+' * b + '+str(Solutions_a_0[1])+', a_n = '+str(Solutions_a_n[0])+' * b + '+str(Solutions_a_n[1]))
+
+print('Finally, using b = '+str(b)+' we find that one example of this constellation is: '+str(getEachNode(Solutions_a_0,b,constellation)))
