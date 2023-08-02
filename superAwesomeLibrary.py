@@ -90,6 +90,9 @@ class Node: #I needed to access all of thee constants dynamically and this is th
                 self.n2 = Fraction(2, 1)
                 self.s1 = Fraction(1, 1)
                 self.s2 = Fraction(0, 1)
+            else:
+                print("unknown symbol %s" % symbol)
+
         elif q == 5:
             if symbol == 'S':
                 self.n1 = Fraction(2, 1)
@@ -111,6 +114,10 @@ class Node: #I needed to access all of thee constants dynamically and this is th
                 self.n2 = Fraction(9, 1)
                 self.s1 = Fraction(1, 1)
                 self.s2 = Fraction(0, 1)
+            else:
+                print("unknown symbol %s" % symbol)
+        else:
+            print("unknown q %s" % q)
 
 def Threading(constellation,q): #This is the heart and soul of this code, this gets the diophantine equations
     [beta, gamma] = [1, 0]
@@ -126,7 +133,7 @@ def Threading(constellation,q): #This is the heart and soul of this code, this g
                              * gamma.denominator, beta.denominator)
     alpha = Fraction(gcd,1)
     beta = alpha * beta
-    gamma = gamma * alpha
+    gamma = gamma * gcd
     return alpha, beta, gamma
 
 def getNodes(Solutions_a_0,Solutions_a_n,constellation,b,q): #Give it the coefficients for the constellation and it will find it somewhere
