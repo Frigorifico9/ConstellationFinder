@@ -1,59 +1,47 @@
-def extended_gcd(a, b): #Helps us reduce fractions
-    if b == 0:
-        return a, 1, 0
+from super_awesome_library import extended_gcd
 
-    gcd, x1, y1 = extended_gcd(b, a % b)
-    x = y1
-    y = x1 - (a // b) * y1
 
-    return gcd, x, y
+def main():
+    max_p = 20
+    q = 3
+    found_ns = set()
 
-findings = []
-maxP = 20
-q=3
-foundNs = []
+    for i in range(0, max_p):
+        beta = q**i
+        for j in range(i, max_p):
+            alpha = 2**j
+            for y1 in range(alpha, 1, -1):
+                for x1 in range(beta, 1, -1):
+                    if (x1 - y1) % (alpha - beta) != 0:
+                        continue
 
-for i in range(0, maxP):
-    beta = q ** i
-    for j in range(i, maxP):
-        alpha = 2 ** j
-        for Y1 in range(alpha, 1, -1):
-            for X1 in range(beta, 1, -1):
-                if (X1 - Y1) % (alpha - beta) == 0:
-                    b1 = (X1 - Y1) // (alpha - beta)
-                    a0 = alpha * b1 + Y1
-                    an = beta * b1 + X1
+                    b1 = (x1 - y1) // (alpha - beta)
+                    a0 = alpha * b1 + y1
+                    an = beta * b1 + x1
                     gamma = alpha * an - beta * a0
-                    gcd, X2, Y2 = extended_gcd(alpha,-beta)
-                    X3 = (gcd * X2 * gamma) % beta
-                    Y3 = (gcd * Y2 * gamma) % alpha
-                    if X3 == X1 and Y3 == Y1:
-                        n1 = 6 * (2 * a0 + 1) + 4
-                        n2 = 6 * (4 * a0) + 4
-                        n3 = 6 * (4 * a0 + 2) + 4
-                        if n1 not in foundNs and n2 not in foundNs and n3 not in foundNs:
-                            foundNs.append(6 * (2 * a0 + 1) + 4)
-                            foundNs.append(6 * (4 * a0) + 4)
-                            foundNs.append(6 * (4 * a0 + 2) + 4)
-                            print(str(alpha) + ' * an = ' + str(beta) + ' * a0 + ' + str(gamma))
-                            print('a0 = ' + str(alpha) + ' * b + ' + str(Y1))
-                            print('an = ' + str(beta) + ' * b + ' + str(X1))
-                            print('b = ' + str(b1))
-                            print(6 * (2 * a0 + 1) + 4)
-                            print(6 * (4 * a0) + 4)
-                            print(6 * (4 * a0 + 2) + 4)
+                    gcd, x2, y2 = extended_gcd(alpha, -beta)
+                    x3 = (gcd * x2 * gamma) % beta
+                    y3 = (gcd * y2 * gamma) % alpha
+                    if x3 != x1 or y3 != y1:
+                        continue
+
+                    n1 = 6 * (2 * a0 + 1) + 4
+                    n2 = 6 * (4 * a0) + 4
+                    n3 = 6 * (4 * a0 + 2) + 4
+                    if n1 in found_ns or n2 in found_ns or n3 in found_ns:
+                        continue
+
+                    found_ns.add(6 * (2 * a0 + 1) + 4)
+                    found_ns.add(6 * (4 * a0) + 4)
+                    found_ns.add(6 * (4 * a0 + 2) + 4)
+                    print(f"{alpha} * an = {beta} * a0 + {gamma}")
+                    print(f"a0 = {alpha} * b + {y1}")
+                    print(f"an = {beta} * b + {x1}")
+                    print(f"b = {b1}")
+                    print(6 * (2 * a0 + 1) + 4)
+                    print(6 * (4 * a0) + 4)
+                    print(6 * (4 * a0 + 2) + 4)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main()
