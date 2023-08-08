@@ -1,4 +1,4 @@
-import superAwesomeLibrary as SAL
+import super_awesome_library as SAL
 
 q = 3
 maxP = 8
