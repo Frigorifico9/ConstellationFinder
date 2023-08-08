@@ -27,7 +27,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
     def __add__(self, other):
         if type(other) == int:
             fraction2 = Fraction(other, 1)
-        elif type(other) == type(Fraction(1, 1)):
+        elif isinstance(other, Fraction):
             fraction2 = other
         newNumerator = self.numerator * fraction2.denominator + fraction2.numerator * self.denominator
         return Fraction(newNumerator, self.denominator * fraction2.denominator)
@@ -35,7 +35,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
     def __sub__(self, other):
         if type(other) == int:
             fraction2 = Fraction(other, 1)
-        elif type(other) == type(Fraction(1, 1)):
+        elif isinstance(other, Fraction):
             fraction2 = other
         newNumerator = self.numerator * fraction2.denominator - fraction2.numerator * self.denominator
         return Fraction(newNumerator, self.denominator * fraction2.denominator)
@@ -45,14 +45,14 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
             fraction2 = Fraction(other, 1)
         if type(other) == int:
             fraction2 = Fraction(other, 1)
-        elif type(other) == type(Fraction(1, 1)):
+        elif isinstance(other, Fraction):
             fraction2 = other
         return Fraction(self.numerator * fraction2.numerator, self.denominator * fraction2.denominator)
 
     def __truediv__(self, other):
         if type(other) == int:
             fraction2 = Fraction(other, 1)
-        elif type(other) == type(Fraction(1, 1)):
+        elif isinstance(other, Fraction):
             fraction2 = other
         if fraction2.error:
             print("You are trying to divide by zero idiot")
