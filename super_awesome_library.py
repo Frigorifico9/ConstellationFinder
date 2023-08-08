@@ -18,7 +18,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
             gcd, x, y = extended_gcd(numerator, denominator)
             self.numerator = int(numerator / gcd)
             self.denominator = int(denominator / gcd)
-            self.actualValue = self.numerator / self.denominator
+            self.actual_value = self.numerator / self.denominator
             self.print = "(" + str(self.numerator) + "/" + str(self.denominator) + ")"
             self.error = False
         else:
@@ -29,16 +29,16 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
             fraction2 = Fraction(other, 1)
         elif isinstance(other, Fraction):
             fraction2 = other
-        newNumerator = self.numerator * fraction2.denominator + fraction2.numerator * self.denominator
-        return Fraction(newNumerator, self.denominator * fraction2.denominator)
+        new_numerator = self.numerator * fraction2.denominator + fraction2.numerator * self.denominator
+        return Fraction(new_numerator, self.denominator * fraction2.denominator)
 
     def __sub__(self, other):
         if type(other) == int:
             fraction2 = Fraction(other, 1)
         elif isinstance(other, Fraction):
             fraction2 = other
-        newNumerator = self.numerator * fraction2.denominator - fraction2.numerator * self.denominator
-        return Fraction(newNumerator, self.denominator * fraction2.denominator)
+        new_numerator = self.numerator * fraction2.denominator - fraction2.numerator * self.denominator
+        return Fraction(new_numerator, self.denominator * fraction2.denominator)
 
     def __mul__(self, other):
         if type(other) == float:
@@ -59,7 +59,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
         return Fraction(self.numerator * fraction2.denominator, self.denominator * fraction2.numerator)
 
 
-def Collatz(start, finish):  # Generates the constellation in one section of the Collatz Tree
+def collatz(start, finish):  # Generates the constellation in one section of the Collatz Tree
     n = start
     sequence = [start]
     while True:
@@ -118,15 +118,15 @@ class Node:  # I needed to access all of thee constants dynamically and this is 
                 self.s2 = Fraction(0, 1)
 
 
-def Threading(constellation, q):  # This is the heart and soul of this code, this gets the diophantine equations
+def threading(constellation, q):  # This is the heart and soul of this code, this gets the diophantine equations
     [beta, gamma] = [1, 0]
     for n in range(1, len(constellation)):
         print(constellation)
-        prevNode = Node(constellation[n - 1], q)
-        currentNode = Node(constellation[n], q)
-        factor1 = prevNode.s1 / currentNode.n1
+        prev_node = Node(constellation[n - 1], q)
+        current_node = Node(constellation[n], q)
+        factor1 = prev_node.s1 / current_node.n1
         beta = factor1 * beta
-        factor2 = (prevNode.s2 - currentNode.n2) / currentNode.n1
+        factor2 = (prev_node.s2 - current_node.n2) / current_node.n1
         gamma = factor1 * gamma + factor2
     gcd, x, y = extended_gcd(beta.denominator * gamma.denominator, beta.denominator)
     alpha = Fraction(gcd, 1)
@@ -135,36 +135,36 @@ def Threading(constellation, q):  # This is the heart and soul of this code, thi
     return alpha, beta, gamma
 
 
-def getNodes(
-    Solutions_a_0, Solutions_a_n, constellation, b, q
+def get_nodes(
+    solutions_a_0, solutions_a_n, constellation, b, q
 ):  # Give it the coefficients for the constellation and it will find it somewhere
-    firstNode = Node(constellation[0], q)
-    lastNode = Node(constellation[len(constellation) - 1], q)
-    a_0 = Solutions_a_0[0] * b + Solutions_a_0[1]
-    a_n = Solutions_a_n[0] * b + Solutions_a_n[1]
-    n1 = firstNode.n1 * a_0 + firstNode.n2
-    n2 = lastNode.s1 * a_n + lastNode.s2
+    first_node = Node(constellation[0], q)
+    last_node = Node(constellation[len(constellation) - 1], q)
+    a_0 = solutions_a_0[0] * b + solutions_a_0[1]
+    a_n = solutions_a_n[0] * b + solutions_a_n[1]
+    n1 = first_node.n1 * a_0 + first_node.n2
+    n2 = last_node.s1 * a_n + last_node.s2
     return 6 * n1 + 4, 6 * n2 + 4
 
 
-def getEachNode(
+def get_each_node(
     a0, b, constellation, q
 ):  # Give it a starting point, a value of b, and a constellation, and it will find the nodes
     nodes = []
     a0 = b * a0[0] + a0[1]
     for element in range(0, len(constellation) - 1):
-        nextNode = Node(constellation[element + 1], q)
-        currentNode = Node(constellation[element], q)
-        n = currentNode.n1 * a0 + currentNode.n2
-        nodes.append(n.actualValue * 6 + 4)
-        a0 = (currentNode.s1 * a0 + currentNode.s2 - nextNode.n2) / nextNode.n1
-    lastNode = Node(constellation[len(constellation) - 1])
-    n = lastNode.n1 * a0 + lastNode.n2
-    nodes.append(n.actualValue * 6 + 4)
+        next_node = Node(constellation[element + 1], q)
+        current_node = Node(constellation[element], q)
+        n = current_node.n1 * a0 + current_node.n2
+        nodes.append(n.actual_value * 6 + 4)
+        a0 = (current_node.s1 * a0 + current_node.s2 - next_node.n2) / next_node.n1
+    last_node = Node(constellation[len(constellation) - 1])
+    n = last_node.n1 * a0 + last_node.n2
+    nodes.append(n.actual_value * 6 + 4)
     return nodes
 
 
-def Qollatz(q, n):  # Generates the constellation in one section of the Collatz Tree
+def qollatz(q, n):  # Generates the constellation in one section of the Collatz Tree
     sequence = [n]
     while True:
         if n % 2 == 0:
@@ -185,7 +185,7 @@ def Qollatz(q, n):  # Generates the constellation in one section of the Collatz 
             sequence.append(n)
 
 
-def findPossibleCyclicalA0(q, maxP):
+def find_possible_cyclical_a0(q, maxP):
     findings = []
     for i in range(1, maxP):
         alpha = 2**i
@@ -194,25 +194,25 @@ def findPossibleCyclicalA0(q, maxP):
             for Y in range(alpha, 1, -1):
                 for X in range(beta, 1, -1):
                     b = (X - Y) / (alpha - beta)
-                    bInt = (X - Y) // (alpha - beta)
-                    if b == bInt:
-                        gcd, X2, Y2 = extended_gcd(alpha, -beta)
-                        gamma = Y / (gcd * Y2)
-                        gammaInt = Y // (gcd * Y2)
-                        if gamma == gammaInt:
-                            findings.append([alpha, beta, gammaInt])
+                    b_int = (X - Y) // (alpha - beta)
+                    if b == b_int:
+                        gcd, x2, y2 = extended_gcd(alpha, -beta)
+                        gamma = Y / (gcd * y2)
+                        gamma_int = Y // (gcd * y2)
+                        if gamma == gamma_int:
+                            findings.append([alpha, beta, gamma_int])
     return findings
 
 
-def generateCyclicalConstellations(length, q):
+def generate_cyclical_constellations(length, q):
     tiles = []
     if q == 3:
         tiles = "STL"
     if q == 5:
         tiles = "STLB"
     combinations = list(itertools.product(tiles, repeat=length))
-    validConstellations = []
+    valid_constellations = []
     for constellation in combinations:
         if constellation[0] == constellation[len(constellation) - 1]:
-            validConstellations.append("".join(constellation))
-    return validConstellations
+            valid_constellations.append("".join(constellation))
+    return valid_constellations

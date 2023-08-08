@@ -15,7 +15,7 @@ class Fraction:
             gcd, x, y = extended_gcd(numerator, denominator)
             self.numerator = int(numerator / gcd)
             self.denominator = int(denominator / gcd)
-            self.actualValue = self.numerator / self.denominator
+            self.actual_value = self.numerator / self.denominator
             self.print = "(" + str(self.numerator) + "/" + str(self.denominator) + ")"
             self.error = False
         else:
@@ -75,36 +75,36 @@ class Node:  # I needed to access all of thee constants dynamically and this is 
             self.s2 = Fraction(0, 1)
 
 
-def Threading(constellation):
+def threading(constellation):
     [constant1, constant2] = [Fraction(1, 1), Fraction(0, 1)]
     for n in range(1, len(constellation)):
-        prevNode = Node(constellation[n - 1])
-        currentNode = Node(constellation[n])
-        factor1 = prevNode.s1 / currentNode.n1
+        prev_node = Node(constellation[n - 1])
+        current_node = Node(constellation[n])
+        factor1 = prev_node.s1 / current_node.n1
         constant1 = factor1 * constant1
-        factor2 = (prevNode.s2 - currentNode.n2) / currentNode.n1
+        factor2 = (prev_node.s2 - current_node.n2) / current_node.n1
         constant2 = factor1 * constant2 + factor2
     return constant1, constant2
 
 
-def getEachNode(Solutions_a_0, b, constellation):
+def get_each_node(Solutions_a_0, b, constellation):
     nodes = []
     a0 = b * Solutions_a_0[0] + Solutions_a_0[1]
     for element in range(0, len(constellation) - 1):
-        nextNode = Node(constellation[element + 1])
-        currentNode = Node(constellation[element])
-        n = a0 * currentNode.n1 + currentNode.n2
-        nodes.append(6 * n.actualValue + 4)
-        a0 = (a0 * currentNode.s1 + currentNode.s2 - nextNode.n2) / nextNode.n1
-    lastNode = Node(constellation[len(constellation) - 1])
-    n = lastNode.n1 * a0 + lastNode.n2
-    nodes.append(6 * n.actualValue + 4)
+        next_node = Node(constellation[element + 1])
+        current_node = Node(constellation[element])
+        n = a0 * current_node.n1 + current_node.n2
+        nodes.append(6 * n.actual_value + 4)
+        a0 = (a0 * current_node.s1 + current_node.s2 - next_node.n2) / next_node.n1
+    last_node = Node(constellation[len(constellation) - 1])
+    n = last_node.n1 * a0 + last_node.n2
+    nodes.append(6 * n.actual_value + 4)
     return nodes
 
 
 # The extended Euclid algorithm gets us a solution, but it doesn't correspond to the solution with b=0. Granted, b=0 is
 # not special objectively speaking, but it is convenient, so we find that solution using this
-def findFirstSolution(constant1, constant2):  # We find the first solution by brute force, I'm sorry
+def find_first_solution(constant1, constant2):  # We find the first solution by brute force, I'm sorry
     for n in range(0, 2**63 - 1):
         k = constant1 * n + constant2
         if int(k.actualValue) == k.actualValue:
@@ -113,14 +113,14 @@ def findFirstSolution(constant1, constant2):  # We find the first solution by br
 
 constellation = "SSSLSSTTTT"
 b = Fraction(0, 1)
-constant1, constant2 = Threading(constellation)
+constant1, constant2 = threading(constellation)
 gcd, x0, y0 = extended_gcd(constant1.denominator, -constant1.numerator)
-gcdSign = gcd / abs(gcd)
+gcd_sign = gcd / abs(gcd)
 # Solutions_a0 = [Fraction(-constant1.denominator/gcd,1),(constant2*y0*gcdSign)]
 # Solutions_an = [Fraction(-constant1.numerator/gcd,1),(constant2*x0*gcdSign)]
-[k, n] = findFirstSolution(constant1, constant2)
-Solutions_a0 = [Fraction(constant1.denominator, 1), Fraction(n, 1)]
-Solutions_an = [Fraction(constant1.numerator, 1), Fraction(k, 1)]
+[k, n] = find_first_solution(constant1, constant2)
+solutions_a0 = [Fraction(constant1.denominator, 1), Fraction(n, 1)]
+solutions_an = [Fraction(constant1.numerator, 1), Fraction(k, 1)]
 
 print(
     "The equation for the constellation "
@@ -133,18 +133,18 @@ print(
 
 print(
     "The solutions are: a_0 = "
-    + str(Solutions_a0[0].print)
+    + str(solutions_a0[0].print)
     + " * b + "
-    + str(Solutions_a0[1].print)
+    + str(solutions_a0[1].print)
     + ", a_n = "
-    + str(Solutions_an[0].print)
+    + str(solutions_an[0].print)
     + " * b + "
-    + str(Solutions_an[1].print)
+    + str(solutions_an[1].print)
 )
 
 print(
     "Finally, using b = "
     + str(b.print)
     + " we find that one example of this constellation is: "
-    + str(getEachNode(Solutions_a0, b, constellation))
+    + str(get_each_node(solutions_a0, b, constellation))
 )

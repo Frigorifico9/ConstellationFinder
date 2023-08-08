@@ -15,7 +15,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
             gcd, x, y = extended_gcd(numerator, denominator)
             self.numerator = int(numerator / gcd)
             self.denominator = int(denominator / gcd)
-            self.actualValue = self.numerator / self.denominator
+            self.actual_value = self.numerator / self.denominator
             self.print = "(" + str(self.numerator) + "/" + str(self.denominator) + ")"
             self.error = False
         else:
@@ -26,16 +26,16 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
             fraction2 = Fraction(other, 1)
         elif isinstance(other, Fraction):
             fraction2 = other
-        newNumerator = self.numerator * fraction2.denominator + fraction2.numerator * self.denominator
-        return Fraction(newNumerator, self.denominator * fraction2.denominator)
+        new_numerator = self.numerator * fraction2.denominator + fraction2.numerator * self.denominator
+        return Fraction(new_numerator, self.denominator * fraction2.denominator)
 
     def __sub__(self, other):
         if type(other) == int:
             fraction2 = Fraction(other, 1)
         elif isinstance(other, Fraction):
             fraction2 = other
-        newNumerator = self.numerator * fraction2.denominator - fraction2.numerator * self.denominator
-        return Fraction(newNumerator, self.denominator * fraction2.denominator)
+        new_numerator = self.numerator * fraction2.denominator - fraction2.numerator * self.denominator
+        return Fraction(new_numerator, self.denominator * fraction2.denominator)
 
     def __mul__(self, other):
         if type(other) == float:
@@ -56,7 +56,7 @@ class Fraction:  # we need to work with fractions to avoid problems with floatin
         return Fraction(self.numerator * fraction2.denominator, self.denominator * fraction2.numerator)
 
 
-def Collatz(start, finish):  # Generates the constellation in one section of the Collatz Tree
+def collatz(start, finish):  # Generates the constellation in one section of the Collatz Tree
     n = start
     sequence = [start]
     while True:
@@ -93,14 +93,14 @@ class Node:  # I needed to access all of thee constants dynamically and this is 
             self.s2 = Fraction(0, 1)
 
 
-def Threading(constellation):  # This is the heart and soul of this code, this gets the diophantine equations
+def threading(constellation):  # This is the heart and soul of this code, this gets the diophantine equations
     [constant1, constant2] = [1, 0]
     for n in range(1, len(constellation)):
-        prevNode = Node(constellation[n - 1])
-        currentNode = Node(constellation[n])
-        factor1 = prevNode.s1 / currentNode.n1
+        prev_node = Node(constellation[n - 1])
+        current_node = Node(constellation[n])
+        factor1 = prev_node.s1 / current_node.n1
         constant1 = factor1 * constant1
-        factor2 = (prevNode.s2 - currentNode.n2) / currentNode.n1
+        factor2 = (prev_node.s2 - current_node.n2) / current_node.n1
         constant2 = factor1 * constant2 + factor2
     gcd, x, y = extended_gcd(constant1.denominator * constant2.denominator, constant1.denominator)
     constant3 = Fraction(gcd, 1)
@@ -109,32 +109,32 @@ def Threading(constellation):  # This is the heart and soul of this code, this g
     return constant1, constant2, constant3
 
 
-def getNodes(
+def get_nodes(
     Solutions_a_0, Solutions_a_n, constellation, b
 ):  # Give it the coefficients for the constellation and it will find it somewhere
-    firstNode = Node(constellation[0])
-    lastNode = Node(constellation[len(constellation) - 1])
+    first_node = Node(constellation[0])
+    last_node = Node(constellation[len(constellation) - 1])
     a_0 = Solutions_a_0[0] * b + Solutions_a_0[1]
     a_n = Solutions_a_n[0] * b + Solutions_a_n[1]
-    n1 = firstNode.n1 * a_0 + firstNode.n2
-    n2 = lastNode.s1 * a_n + lastNode.s2
+    n1 = first_node.n1 * a_0 + first_node.n2
+    n2 = last_node.s1 * a_n + last_node.s2
     return 6 * n1 + 4, 6 * n2 + 4
 
 
-def getEachNode(
+def get_each_node(
     a0, b, constellation
 ):  # Give it a starting point, a value of b, and a constellation, and it will find the nodes
     nodes = []
     a0 = b * a0[0] + a0[1]
     for element in range(0, len(constellation) - 1):
-        nextNode = Node(constellation[element + 1])
-        currentNode = Node(constellation[element])
-        n = currentNode.n1 * a0 + currentNode.n2
-        nodes.append(n.actualValue * 6 + 4)
-        a0 = (currentNode.s1 * a0 + currentNode.s2 - nextNode.n2) / nextNode.n1
-    lastNode = Node(constellation[len(constellation) - 1])
-    n = lastNode.n1 * a0 + lastNode.n2
-    nodes.append(n.actualValue * 6 + 4)
+        next_node = Node(constellation[element + 1])
+        current_node = Node(constellation[element])
+        n = current_node.n1 * a0 + current_node.n2
+        nodes.append(n.actual_value * 6 + 4)
+        a0 = (current_node.s1 * a0 + current_node.s2 - next_node.n2) / next_node.n1
+    last_node = Node(constellation[len(constellation) - 1])
+    n = last_node.n1 * a0 + last_node.n2
+    nodes.append(n.actual_value * 6 + 4)
     return nodes
 
 
@@ -153,7 +153,7 @@ constellation = "SSSLLLTS"
 # constellation = 'SSSLSSTLS'
 # constellation = 'SS'
 b = Fraction(0, 1)
-constant1, constant2, constant3 = Threading(constellation)
+constant1, constant2, constant3 = threading(constellation)
 gcd, x, y = extended_gcd(constant3.numerator, -constant1.numerator)
 a0 = [
     constant3.numerator,
@@ -165,11 +165,11 @@ print(
     "The equation for the constellation "
     + constellation
     + " is "
-    + str(int(constant3.actualValue))
+    + str(int(constant3.actual_value))
     + "*a_n = "
-    + str(int(constant1.actualValue))
+    + str(int(constant1.actual_value))
     + " * a_0 + "
-    + str(int(constant2.actualValue))
+    + str(int(constant2.actual_value))
 )
 
 print(
@@ -180,5 +180,5 @@ print(
     "Finally, using b = "
     + str(b.print)
     + " we find that one example of this constellation is: "
-    + str(getEachNode(a0, b, constellation))
+    + str(get_each_node(a0, b, constellation))
 )
