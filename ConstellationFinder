@@ -1,0 +1,16 @@
+import math #just in case you want to have b=pi or other fun stuff like that
+import superAwesomeLibrary as sa
+
+constellation = 'SSSLSSTLS'
+b = sa.Fraction(-1,1)
+
+alpha,beta,gamma = sa.threading(constellation)
+gcd,x,y = sa.extended_gcd(alpha.numerator,-beta.numerator)
+a0 = [alpha.numerator,(gcd*y*gamma.numerator)%alpha.numerator] #Technically we only need x and y, but we so all this extra stuff to ensure that negative sequences have integer 'b'
+an = [beta.numerator,(gcd*x*gamma.numerator)%beta.numerator]
+
+print('The equation for the constellation '+constellation+' is '+str(int(gamma.actualValue))+'*a_n = '+str(int(alpha.actualValue))+' * a_0 + '+str(int(beta.actualValue)))
+
+print('The solutions are: a_0 = '+str(a0[0])+' * b + '+str(a0[1])+', a_n = '+str(an[0])+' * b + '+str(an[1]))
+
+print('Finally, using b = '+str(b.print)+' we find that one example of this constellation is: '+str(sa.getEachNode(a0,b,constellation)))
